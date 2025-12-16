@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Zebra Logic Puzzle</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<h2>Zebra Logic Puzzle</h2>
+
+<table id="puzzle-grid">
+  <thead>
+    <tr>
+      <th></th>
+      <th>House #1</th>
+      <th>House #2</th>
+      <th>House #3</th>
+      <th>House #4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Color</th>
+      <td><select class="color"></select></td>
+      <td><select class="color"></select></td>
+      <td><select class="color"></select></td>
+      <td><select class="color"></select></td>
+    </tr>
+    <tr>
+      <th>Family</th>
+      <td><select class="family"></select></td>
+      <td><select class="family"></select></td>
+      <td><select class="family"></select></td>
+      <td><select class="family"></select></td>
+    </tr>
+    <tr>
+      <th>Barbecue</th>
+      <td><select class="bbq"></select></td>
+      <td><select class="bbq"></select></td>
+      <td><select class="bbq"></select></td>
+      <td><select class="bbq"></select></td>
+    </tr>
+    <tr>
+      <th>Tradition</th>
+      <td><select class="tradition"></select></td>
+      <td><select class="tradition"></select></td>
+      <td><select class="tradition"></select></td>
+      <td><select class="tradition"></select></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="controls">
+  <button onclick="resetGrid()">Reset</button>
+  <button onclick="checkAnswers()">Check Answers</button>
+</div>
+
+<h3>Clues</h3>
+<ul>
+  <li>The Red house does not belong to the Sharma family.</li>
+  <li>House #2 celebrates a different tradition than House #4.</li>
+  <li>The family that hosts Barbecue lives in House #3.</li>
+</ul>
+
+<script src="script.js"></script>
+</body>
+</html>
