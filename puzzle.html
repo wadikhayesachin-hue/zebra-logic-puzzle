@@ -7,59 +7,43 @@
 </head>
 <body>
 
-<h2>Zebra Logic Puzzle</h2>
+<h2 id="puzzle-title">Zebra Logic Puzzle</h2>
+
+
+<div id="timer" style="margin-bottom:10px; font-weight:bold;">
+  Time: --
+</div>
+
+
 
 <table id="puzzle-grid">
   <thead>
-    <tr>
-      <th></th>
-      <th>House #1</th>
-      <th>House #2</th>
-      <th>House #3</th>
-      <th>House #4</th>
+    <tr id="column-labels">
+      <!-- Column labels will be injected dynamically -->
     </tr>
   </thead>
-  <tbody>
-    <tr>
-      <th>Color</th>
-      <td><select class="color"></select></td>
-      <td><select class="color"></select></td>
-      <td><select class="color"></select></td>
-      <td><select class="color"></select></td>
-    </tr>
-    <tr>
-      <th>Family</th>
-      <td><select class="family"></select></td>
-      <td><select class="family"></select></td>
-      <td><select class="family"></select></td>
-      <td><select class="family"></select></td>
-    </tr>
-    <tr>
-      <th>Barbecue</th>
-      <td><select class="bbq"></select></td>
-      <td><select class="bbq"></select></td>
-      <td><select class="bbq"></select></td>
-      <td><select class="bbq"></select></td>
-    </tr>
-    <tr>
-      <th>Tradition</th>
-      <td><select class="tradition"></select></td>
-      <td><select class="tradition"></select></td>
-      <td><select class="tradition"></select></td>
-      <td><select class="tradition"></select></td>
-    </tr>
+
+  <tbody id="grid-body">
+    <!-- Rows will be injected dynamically -->
   </tbody>
 </table>
 
 <div class="controls">
   <button onclick="resetGrid()">Reset</button>
   <button onclick="checkAnswers()">Check Answers</button>
+  <button id="hint-btn" onclick="giveHint()">Hint (3)</button>
+
+  <button onclick="nextPuzzle()">Next Puzzle</button>
 </div>
+<div id="live-warning" style="color:#a94442; margin-top:10px;"></div>
 
 <h3>Clues</h3>
 <ul id="clues-list"></ul>
-
-
+<div id="puzzle-status" style="margin-top:10px; font-weight:bold;"></div>
+<div id="hints-container" style="margin-top:10px;">
+  <strong>Hints:</strong>
+  <div id="hints-list"></div>
+</div>
 <script src="puzzle.js"></script>
 <script src="script.js"></script>
 </body>

@@ -1,8 +1,7 @@
 console.log("Puzzle JS loaded");
 
-
-
 const PUZZLES = [
+
 /* =========================
    LEVEL 1 – VERY EASY
 ========================= */
@@ -21,7 +20,17 @@ const PUZZLES = [
     "Amit does not drink Coffee.",
     "The person in Pune drinks Tea.",
     "Neha lives in Jaipur."
-  ]
+  ],
+  eliminations: [
+    { category: "Drink", value: "Coffee", house: 1 },
+    { category: "City", value: "Delhi", house: 3 },
+    { category: "Person", value: "Neha", house: 1 }
+  ],
+  solution: {
+    House1: { Person: "Amit", Drink: "Tea", City: "Delhi" },
+    House2: { Person: "Ravi", Drink: "Coffee", City: "Pune" },
+    House3: { Person: "Neha", Drink: "Juice", City: "Jaipur" }
+  }
 },
 
 {
@@ -38,7 +47,17 @@ const PUZZLES = [
     "The person with the Dog lives in the Red house.",
     "Sonia does not own the Fish.",
     "Karan lives in the Blue house."
-  ]
+  ],
+  eliminations: [
+    { category: "Pet", value: "Fish", house: 2 },
+    { category: "Color", value: "Blue", house: 1 },
+    { category: "Person", value: "Karan", house: 1 }
+  ],
+  solution: {
+    House1: { Person: "Rahul", Pet: "Dog", Color: "Red" },
+    House2: { Person: "Karan", Pet: "Cat", Color: "Blue" },
+    House3: { Person: "Sonia", Pet: "Fish", Color: "Green" }
+  }
 },
 
 /* =========================
@@ -60,7 +79,19 @@ const PUZZLES = [
     "The Blue house celebrates Pongal.",
     "The Patel family lives in the Yellow house.",
     "The Green house celebrates Diwali."
-  ]
+  ],
+  eliminations: [
+    { category: "Tradition", value: "Eid", house: 1 },
+    { category: "Color", value: "Yellow", house: 1 },
+    { category: "Family", value: "Patel", house: 1 },
+    { category: "Tradition", value: "Diwali", house: 2 }
+  ],
+  solution: {
+    House1: { Family: "Sharma", Tradition: "Diwali", Color: "Green" },
+    House2: { Family: "Iyer", Tradition: "Pongal", Color: "Blue" },
+    House3: { Family: "Khan", Tradition: "Eid", Color: "Red" },
+    House4: { Family: "Patel", Tradition: "Navratri", Color: "Yellow" }
+  }
 },
 
 {
@@ -78,7 +109,18 @@ const PUZZLES = [
     "The person who goes Hiking does it on Sunday.",
     "Anu’s plan is on Friday.",
     "The Movie plan is not on Monday."
-  ]
+  ],
+  eliminations: [
+    { category: "Activity", value: "Shopping", house: 3 },
+    { category: "Day", value: "Sunday", house: 1 },
+    { category: "Activity", value: "Movie", house: 4 }
+  ],
+  solution: {
+    House1: { Person: "Anu", Activity: "Reading", Day: "Friday" },
+    House2: { Person: "Rohit", Activity: "Hiking", Day: "Sunday" },
+    House3: { Person: "Meera", Activity: "Movie", Day: "Saturday" },
+    House4: { Person: "Vikram", Activity: "Shopping", Day: "Monday" }
+  }
 },
 
 /* =========================
@@ -102,7 +144,18 @@ const PUZZLES = [
     "The Engineer does not sit at the Corner.",
     "Divya is not the Tester.",
     "The person at the Entrance drinks Water."
-  ]
+  ],
+  eliminations: [
+    { category: "Role", value: "Tester", house: 4 },
+    { category: "Drink", value: "Coffee", house: 4 },
+    { category: "Desk", value: "Corner", house: 3 }
+  ],
+  solution: {
+    House1: { Person: "Ajay", Role: "Manager", Drink: "Tea", Desk: "Near Window" },
+    House2: { Person: "Bhavna", Role: "Designer", Drink: "Juice", Desk: "Center" },
+    House3: { Person: "Chirag", Role: "Engineer", Drink: "Coffee", Desk: "Corner" },
+    House4: { Person: "Divya", Role: "Tester", Drink: "Water", Desk: "Entrance" }
+  }
 },
 
 {
@@ -122,7 +175,18 @@ const PUZZLES = [
     "The student with the Black bag is in Grade 7.",
     "Kabir is in the Sports club.",
     "Grade 6 student carries a Red bag."
-  ]
+  ],
+  eliminations: [
+    { category: "Club", value: "Music", house: 2 },
+    { category: "Grade", value: "6", house: 4 },
+    { category: "Bag", value: "Black", house: 1 }
+  ],
+  solution: {
+    House1: { Student: "Aarav", Club: "Music", Grade: "6", Bag: "Red" },
+    House2: { Student: "Diya", Club: "Drama", Grade: "7", Bag: "Black" },
+    House3: { Student: "Kabir", Club: "Sports", Grade: "8", Bag: "Blue" },
+    House4: { Student: "Riya", Club: "Robotics", Grade: "9", Bag: "Green" }
+  }
 },
 
 /* =========================
@@ -147,7 +211,19 @@ const PUZZLES = [
     "The Bus traveler went to Brazil.",
     "Chetan did not use the Train.",
     "The Italy trip was in February."
-  ]
+  ],
+  eliminations: [
+    { category: "Month", value: "Mar", house: 1 },
+    { category: "Transport", value: "Train", house: 3 },
+    { category: "Country", value: "Japan", house: 2 }
+  ],
+  solution: {
+    House1: { Traveler: "Ankit", Country: "France", Transport: "Train", Month: "Jan" },
+    House2: { Traveler: "Bhavya", Country: "Italy", Transport: "Car", Month: "Feb" },
+    House3: { Traveler: "Chetan", Country: "Spain", Transport: "Ship", Month: "Mar" },
+    House4: { Traveler: "Deepa", Country: "Brazil", Transport: "Bus", Month: "Apr" },
+    House5: { Traveler: "Esha", Country: "Japan", Transport: "Plane", Month: "May" }
+  }
 },
 
 {
@@ -168,7 +244,19 @@ const PUZZLES = [
     "Sameer did not found the FinTech company.",
     "The Series B startup is in Delhi.",
     "Neel’s startup is not Ecommerce."
-  ]
+  ],
+  eliminations: [
+    { category: "Startup", value: "Ecommerce", house: 2 },
+    { category: "City", value: "Mumbai", house: 5 },
+    { category: "Founder", value: "Sameer", house: 1 }
+  ],
+  solution: {
+    House1: { Founder: "Arjun", Startup: "FinTech", City: "Pune", Funding: "Seed" },
+    House2: { Founder: "Neel", Startup: "EdTech", City: "Hyderabad", Funding: "IPO" },
+    House3: { Founder: "Pooja", Startup: "Health", City: "Mumbai", Funding: "Bootstrapped" },
+    House4: { Founder: "Sameer", Startup: "Ecommerce", City: "Delhi", Funding: "Series B" },
+    House5: { Founder: "Tara", Startup: "AI", City: "Bangalore", Funding: "Series A" }
+  }
 },
 
 /* =========================
@@ -194,7 +282,19 @@ const PUZZLES = [
     "Floor 1 owner has no pet.",
     "The Mercedes owner drinks Coffee.",
     "Owner A does not live on Floor 3 or 4."
-  ]
+  ],
+  eliminations: [
+    { category: "Floor", value: "3", house: 2 },
+    { category: "Floor", value: "4", house: 2 },
+    { category: "Pet", value: "Dog", house: 1 }
+  ],
+  solution: {
+    House1: { Owner: "B", Floor: "1", Car: "BMW", Pet: "None", Drink: "Tea" },
+    House2: { Owner: "A", Floor: "2", Car: "Audi", Pet: "Cat", Drink: "Water" },
+    House3: { Owner: "C", Floor: "3", Car: "Volvo", Pet: "Bird", Drink: "Wine" },
+    House4: { Owner: "D", Floor: "4", Car: "Mercedes", Pet: "Dog", Drink: "Coffee" },
+    House5: { Owner: "E", Floor: "5", Car: "Tesla", Pet: "Fish", Drink: "Juice" }
+  }
 },
 
 {
@@ -216,6 +316,19 @@ const PUZZLES = [
     "The Economics talk is not in Hall A.",
     "Delta is not from USA.",
     "The Brazil speaker talks at 5PM."
-  ]
+  ],
+  eliminations: [
+    { category: "Country", value: "USA", house: 4 },
+    { category: "Hall", value: "A", house: 3 },
+    { category: "Time", value: "5PM", house: 1 }
+  ],
+  solution: {
+    House1: { Speaker: "Alpha", Topic: "AI", Country: "USA", Time: "9AM", Hall: "A" },
+    House2: { Speaker: "Beta", Topic: "Climate", Country: "India", Time: "11AM", Hall: "B" },
+    House3: { Speaker: "Gamma", Topic: "Health", Country: "Germany", Time: "1PM", Hall: "C" },
+    House4: { Speaker: "Delta", Topic: "Economics", Country: "Japan", Time: "3PM", Hall: "D" },
+    House5: { Speaker: "Omega", Topic: "Security", Country: "Brazil", Time: "5PM", Hall: "E" }
+  }
 }
+
 ];
