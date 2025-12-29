@@ -1,5 +1,24 @@
 console.log("Script.js loaded");
 console.log("Puzzles available:", PUZZLES);
+import { PUZZLES } from "./puzzle.js";
+import { validatePuzzle } from "./puzzleValidator.js";
+
+import { createGrid } from "./grid.js";
+import {
+  applyRelativePosition,
+  applyEqual,
+  applyNotEqual,
+  applyUniqueness
+} from "./solver.js";
+let selectedHints = [];
+let hintIndex = 0;
+
+const selectedLevel =
+  Number(localStorage.getItem("selectedDifficulty")) || 1;
+
+PUZZLES.forEach(puzzle => {
+  validatePuzzle(puzzle);
+});
 
 /* -------------------------
    GAME CONFIGURATION
@@ -17,8 +36,153 @@ const TIME_LIMITS = {
    GLOBAL STATE
 -------------------------- */
 
+const FILTERED_PUZZLES = PUZZLES.filter(
+  p => p.level === selectedLevel
+);
+
 let currentPuzzleIndex = 0;
-let currentPuzzle = PUZZLES[currentPuzzleIndex];
+let currentPuzzle = FILTERED_PUZZLES[currentPuzzleIndex];
+currentPuzzle = PUZZLES.find(p => p.id === "L2-P2");
+
+console.log("Current puzzle:", currentPuzzle.id);
+// TEMP: verify solver output for solver-ready puzzles only
+PUZZLES.forEach(puzzle => {
+
+  if (!isSolverReady(puzzle)) {
+    console.log(`Solver skipped for ${puzzle.id} (not solver-ready)`);
+    return;
+  }
+
+  const grid = createGrid(puzzle);
+  let changed;
+
+  do {
+    grid.resetChangeCount();
+
+    puzzle.clues.forEach(clue => {
+
+      if (clue.type === "EQUAL") {
+        applyEqual(clue, puzzle, grid);
+      }
+
+      if (clue.type === "NOT_EQUAL") {
+        applyNotEqual(clue, puzzle, grid);
+      }
+
+      if (clue.type === "RELATIVE_POSITION") {
+        applyRelativePosition(clue, puzzle, grid);
+      }
+
+    });
+
+    applyUniqueness(puzzle, grid);
+
+    changed = grid.getChangeCount() > 0;
+
+  } while (changed);
+
+  console.log(
+    `Solver result for ${puzzle.id}:`,
+    grid.getEliminations()
+  );
+});
+
+
+// Initialize grid for this puzzle
+// Initialize grid
+const grid = createGrid(currentPuzzle);
+
+// Run solver until stable
+let changed;
+
+if (isSolverReady(currentPuzzle)) {
+
+  do {
+    grid.resetChangeCount();
+
+    currentPuzzle.clues.forEach(clue => {
+
+      if (clue.type === "EQUAL") {
+        applyEqual(clue, currentPuzzle, grid);
+      }
+
+      if (clue.type === "NOT_EQUAL") {
+        applyNotEqual(clue, currentPuzzle, grid);
+      }
+
+      if (clue.type === "RELATIVE_POSITION") {
+        applyRelativePosition(clue, currentPuzzle, grid);
+      }
+
+    });
+
+    applyUniqueness(currentPuzzle, grid);
+
+    changed = grid.getChangeCount() > 0;
+
+  } while (changed);
+
+  console.log("Final solver eliminations:", grid.getEliminations());
+
+} else {
+  console.log(
+    `Solver skipped for ${currentPuzzle.id} (not solver-ready)`
+  );
+}
+
+
+
+
+// Inspect final solver output
+console.log("Final solver eliminations:", grid.getEliminations());
+
+
+// TEMP: log solver-derived eliminations
+console.log(
+  "Solver eliminations:",
+  grid.getEliminations()
+);
+// Compare solver vs manual eliminations
+const manual = currentPuzzle.eliminations || [];
+const solver = grid.getEliminations();
+
+// Solver eliminations that already exist manually
+const matched = solver.filter(s =>
+  manual.some(m =>
+    m.category === s.category &&
+    m.value === s.value &&
+    m.house === s.house
+  )
+);
+
+// Solver eliminations that are NEW
+const missing = solver.filter(s =>
+  !manual.some(m =>
+    m.category === s.category &&
+    m.value === s.value &&
+    m.house === s.house
+  )
+);
+// Build exactly 3 hints from solver output
+const hintGroups = grid.getHintsByStrength();
+
+selectedHints = [];
+hintIndex = 0;
+
+if (hintGroups.SOFT.length) {
+  selectedHints.push(hintGroups.SOFT[0]);
+}
+if (hintGroups.MEDIUM.length) {
+  selectedHints.push(hintGroups.MEDIUM[0]);
+}
+if (hintGroups.STRONG.length) {
+  selectedHints.push(hintGroups.STRONG[0]);
+}
+
+console.log("Selected hints:", selectedHints);
+console.log("Matched eliminations:", matched);
+console.log("New solver eliminations:", missing);
+
 let puzzleSolved = false;
 
 let timerInterval = null;
@@ -87,6 +251,24 @@ function populateDropdowns() {
 /* -------------------------
    CLUES
 -------------------------- */
+function renderClue(clue) {
+  // Old puzzles (string clues)
+  if (typeof clue === "string") {
+    return clue;
+  }
+
+  // Structured clues (new automation-ready format)
+  if (clue.type === "NOT_EQUAL") {
+    return `${clue.left.value} does not have ${clue.right.value}.`;
+  }
+
+  if (clue.type === "EQUAL") {
+    return `${clue.left.value} is associated with ${clue.right.value}.`;
+  }
+
+  // Fallback (safety)
+  return "Unknown clue format.";
+}
 
 function loadClues() {
   const cluesList = document.querySelector("#clues-list");
@@ -94,7 +276,7 @@ function loadClues() {
 
   currentPuzzle.clues.forEach(clue => {
     const li = document.createElement("li");
-    li.textContent = clue;
+   li.textContent = renderClue(clue);
     cluesList.appendChild(li);
   });
 }
@@ -102,7 +284,9 @@ function loadClues() {
 /* -------------------------
    HELPERS
 -------------------------- */
-
+function isSolverReady(puzzle) {
+  return puzzle.clues.every(clue => typeof clue === "object");
+}
 function resetGrid() {
   // Show confirmation only if reset is late
   if (isLateReset()) {
@@ -352,6 +536,9 @@ function validateAllConstraints() {
 
 function nextPuzzle() {
   currentPuzzleIndex++;
+  hintIndex = 0;
+  selectedHints = [];
+  document.getElementById("hints-list").innerHTML = "";
 
   if (currentPuzzleIndex >= PUZZLES.length) {
     currentPuzzleIndex = PUZZLES.length - 1;
@@ -368,63 +555,8 @@ function updateHintButton() {
   btn.textContent = `Hint (${MAX_HINTS - hintsUsed})`;
   btn.disabled = hintsUsed >= MAX_HINTS;
 }
-function giveHint() {
-  if (puzzleSolved) return;
 
-  if (hintsUsed >= MAX_HINTS) {
-    showPuzzleStatus("No more hints available for this puzzle.");
-    return;
-  }
 
-  if (!currentPuzzle.eliminations || currentPuzzle.eliminations.length === 0) {
-    showPuzzleStatus("No hints available for this puzzle.");
-    return;
-  }
-
-  // Find the first unused, applicable elimination
-  const hint = currentPuzzle.eliminations.find(e => {
-    const key = `${e.category}-${e.value}-${e.house}`;
-    if (usedEliminations.includes(key)) return false;
-
-    const row = findRowByCategory(e.category);
-    if (!row) return false;
-
-    const select = row.children[e.house].querySelector("select");
-    if (!select) return false;
-
-    // Only give hint if user hasn't already filled something there
-    return select.value === "";
-  });
-
-  if (!hint) {
-    showPuzzleStatus("No safe hint available at this stage.");
-    return;
-  }
-
-  applyEliminationHint(hint);
-
-  hintsUsed++;
-  usedEliminations.push(`${hint.category}-${hint.value}-${hint.house}`);
-  updateHintButton();
-
- const hintText =
-  `Hint ${hintsUsed}: "${hint.value}" cannot be in House #${hint.house} (${hint.category}).`;
-
-shownHints.push(hintText);
-renderHints();
-function renderHints() {
-  const container = document.getElementById("hints-list");
-  if (!container) return;
-
-  container.innerHTML = "";
-
-  shownHints.forEach(text => {
-    const div = document.createElement("div");
-    div.textContent = text;
-    container.appendChild(div);
-  });
-}
-}
 function applyEliminationHint(hint) {
   const row = findRowByCategory(hint.category);
   if (!row) return;
@@ -444,6 +576,22 @@ function findRowByCategory(categoryName) {
   }
   return null;
 }
+function giveHint() {
+  if (hintIndex >= selectedHints.length) {
+    document.getElementById("hints-list").innerHTML +=
+      "<div>No more hints available.</div>";
+    return;
+  }
+
+  const hint = selectedHints[hintIndex];
+  hintIndex++;
+
+  document.getElementById("hints-list").innerHTML +=
+    `<div>• ${hint.reason.explanation}</div>`;
+}
+
+// Make it available to HTML
+window.giveHint = giveHint;
 
 /* -------------------------
    INIT

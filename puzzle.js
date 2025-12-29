@@ -1,6 +1,7 @@
 console.log("Puzzle JS loaded");
 
-const PUZZLES = [
+export const PUZZLES = [
+
 
 /* =========================
    LEVEL 1 – VERY EASY
@@ -17,15 +18,23 @@ const PUZZLES = [
     City: ["Delhi", "Pune", "Jaipur"]
   },
   clues: [
-    "Amit does not drink Coffee.",
-    "The person in Pune drinks Tea.",
-    "Neha lives in Jaipur."
+    {
+      type: "NOT_EQUAL",
+      left:  { category: "Person", value: "Amit" },
+      right: { category: "Drink", value: "Coffee" }
+    },
+    {
+      type: "EQUAL",
+      left:  { category: "City", value: "Pune" },
+      right: { category: "Drink", value: "Tea" }
+    },
+    {
+      type: "EQUAL",
+      left:  { category: "Person", value: "Neha" },
+      right: { category: "City", value: "Jaipur" }
+    }
   ],
-  eliminations: [
-    { category: "Drink", value: "Coffee", house: 1 },
-    { category: "City", value: "Delhi", house: 3 },
-    { category: "Person", value: "Neha", house: 1 }
-  ],
+  
   solution: {
     House1: { Person: "Amit", Drink: "Tea", City: "Delhi" },
     House2: { Person: "Ravi", Drink: "Coffee", City: "Pune" },
@@ -33,8 +42,8 @@ const PUZZLES = [
   }
 },
 
-{
-  id: "L1-P2",
+
+{  id: "L1-P2",
   level: 1,
   title: "Pet Choices",
   houses: 3,
@@ -43,16 +52,25 @@ const PUZZLES = [
     Pet: ["Dog", "Cat", "Fish"],
     Color: ["Red", "Blue", "Green"]
   },
-  clues: [
-    "The person with the Dog lives in the Red house.",
-    "Sonia does not own the Fish.",
-    "Karan lives in the Blue house."
-  ],
-  eliminations: [
-    { category: "Pet", value: "Fish", house: 2 },
-    { category: "Color", value: "Blue", house: 1 },
-    { category: "Person", value: "Karan", house: 1 }
-  ],
+clues: [
+  {
+    type: "EQUAL",
+    left:  { category: "Pet", value: "Dog" },
+    right: { category: "Color", value: "Red" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left:  { category: "Person", value: "Sonia" },
+    right: { category: "Pet", value: "Fish" }
+  },
+  {
+    type: "EQUAL",
+    left:  { category: "Person", value: "Karan" },
+    right: { category: "Color", value: "Blue" }
+  }
+],
+
+  
   solution: {
     House1: { Person: "Rahul", Pet: "Dog", Color: "Red" },
     House2: { Person: "Karan", Pet: "Cat", Color: "Blue" },
@@ -75,17 +93,29 @@ const PUZZLES = [
     Color: ["Red", "Blue", "Green", "Yellow"]
   },
   clues: [
-    "The Sharma family does not celebrate Eid.",
-    "The Blue house celebrates Pongal.",
-    "The Patel family lives in the Yellow house.",
-    "The Green house celebrates Diwali."
-  ],
-  eliminations: [
-    { category: "Tradition", value: "Eid", house: 1 },
-    { category: "Color", value: "Yellow", house: 1 },
-    { category: "Family", value: "Patel", house: 1 },
-    { category: "Tradition", value: "Diwali", house: 2 }
-  ],
+  {
+    type: "NOT_EQUAL",
+    left:  { category: "Family", value: "Sharma" },
+    right: { category: "Tradition", value: "Eid" }
+  },
+  {
+    type: "EQUAL",
+    left:  { category: "Color", value: "Blue" },
+    right: { category: "Tradition", value: "Pongal" }
+  },
+  {
+    type: "EQUAL",
+    left:  { category: "Family", value: "Patel" },
+    right: { category: "Color", value: "Yellow" }
+  },
+  {
+    type: "EQUAL",
+    left:  { category: "Color", value: "Green" },
+    right: { category: "Tradition", value: "Diwali" }
+  }
+],
+
+ 
   solution: {
     House1: { Family: "Sharma", Tradition: "Diwali", Color: "Green" },
     House2: { Family: "Iyer", Tradition: "Pongal", Color: "Blue" },
@@ -105,16 +135,30 @@ const PUZZLES = [
     Day: ["Friday", "Saturday", "Sunday", "Monday"]
   },
   clues: [
-    "Meera does not go Shopping.",
-    "The person who goes Hiking does it on Sunday.",
-    "Anu’s plan is on Friday.",
-    "The Movie plan is not on Monday."
-  ],
-  eliminations: [
-    { category: "Activity", value: "Shopping", house: 3 },
-    { category: "Day", value: "Sunday", house: 1 },
-    { category: "Activity", value: "Movie", house: 4 }
-  ],
+  {
+    type: "NOT_EQUAL",
+    left:  { category: "Person", value: "Meera" },
+    right: { category: "Activity", value: "Shopping" }
+  },
+  {
+    type: "RELATIVE_POSITION",
+    left:  { category: "Activity", value: "Hiking" },
+    right: { category: "Day", value: "Sunday" },
+    relation: "IMMEDIATELY_BEFORE"
+  },
+  {
+    type: "EQUAL",
+    left:  { category: "Person", value: "Anu" },
+    right: { category: "Day", value: "Friday" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left:  { category: "Activity", value: "Movie" },
+    right: { category: "Day", value: "Monday" }
+  }
+],
+
+ 
   solution: {
     House1: { Person: "Anu", Activity: "Reading", Day: "Friday" },
     House2: { Person: "Rohit", Activity: "Hiking", Day: "Sunday" },

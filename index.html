@@ -21,7 +21,16 @@
 
 
 
-    <a href="puzzle.html" class="btn">Start Solving</a>
+    <button class="btn" onclick="startPuzzle()">Start Solving</button>
+
+<script>
+  function startPuzzle() {
+    const level = document.getElementById("difficulty").value;
+    localStorage.setItem("selectedDifficulty", level);
+    window.location.href = "puzzle.html";
+  }
+</script>
+
   </section>
 
 </body>
