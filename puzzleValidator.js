@@ -10,7 +10,8 @@ const ALLOWED_CONSTRAINT_TYPES = [
   "NOT_EQUAL",
   "POSITION",
   "RELATIVE_POSITION",
-  "CONDITIONAL"
+  "CONDITIONAL",
+  "BETWEEN" // future-safe
 ];
 
 /* =========================
@@ -40,14 +41,16 @@ export function validatePuzzle(puzzle) {
   puzzle.clues.forEach(clue => {
     if (typeof clue === "object") {
       validateConstraint(clue, puzzle);
+    } else {
+      throw new Error(`${puzzle.id}: string clues are not allowed`);
     }
   });
 
-  console.log(`✅ ${puzzle.id} validated`);
+  //console.log(`✅ ${puzzle.id} validated`);
 }
 
 /* =========================
-   Constraint Validators
+   Constraint Dispatcher
 ========================= */
 
 function validateConstraint(constraint, puzzle) {
@@ -77,6 +80,10 @@ function validateConstraint(constraint, puzzle) {
       validateConditionalConstraint(constraint, puzzle);
       break;
 
+    case "BETWEEN":
+      validateBetweenConstraint(constraint, puzzle);
+      break;
+
     default:
       throw new Error(`Unhandled constraint type: ${constraint.type}`);
   }
@@ -98,13 +105,13 @@ function validateBinaryConstraint(constraint, puzzle) {
 }
 
 function validatePositionConstraint(constraint, puzzle) {
-  const { item, house } = constraint;
+  const { target, house } = constraint;
 
-  if (!item || house === undefined) {
-    throw new Error("POSITION constraint requires item and house");
+  if (!target || house === undefined) {
+    throw new Error("POSITION constraint requires target and house");
   }
 
-  validateCategoryValue(item, puzzle);
+  validateCategoryValue(target, puzzle);
 
   if (house < 1 || house > puzzle.houses) {
     throw new Error(`Invalid house number: ${house}`);
@@ -142,6 +149,18 @@ function validateConditionalConstraint(constraint, puzzle) {
 
   validateCategoryValue(ifPart, puzzle);
   validateCategoryValue(thenPart, puzzle);
+}
+
+function validateBetweenConstraint(constraint, puzzle) {
+  const { middle, left, right } = constraint;
+
+  if (!middle || !left || !right) {
+    throw new Error("BETWEEN constraint requires middle, left, and right");
+  }
+
+  validateCategoryValue(middle, puzzle);
+  validateCategoryValue(left, puzzle);
+  validateCategoryValue(right, puzzle);
 }
 
 /* =========================

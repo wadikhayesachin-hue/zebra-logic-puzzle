@@ -1,211 +1,110 @@
-console.log("Script.js loaded");
-console.log("Puzzles available:", PUZZLES);
 import { PUZZLES } from "./puzzle.js";
 import { validatePuzzle } from "./puzzleValidator.js";
-
 import { createGrid } from "./grid.js";
-import {
-  applyRelativePosition,
-  applyEqual,
-  applyNotEqual,
-  applyUniqueness
-} from "./solver.js";
-let selectedHints = [];
-let hintIndex = 0;
 
-const selectedLevel =
-  Number(localStorage.getItem("selectedDifficulty")) || 1;
-
-PUZZLES.forEach(puzzle => {
-  validatePuzzle(puzzle);
+/* =========================
+   DIFFICULTY META
+========================= */
+const PUZZLES_BY_LEVEL = {};
+PUZZLES.forEach(p => {
+  if (!PUZZLES_BY_LEVEL[p.level]) {
+    PUZZLES_BY_LEVEL[p.level] = [];
+  }
+  PUZZLES_BY_LEVEL[p.level].push(p);
 });
 
-/* -------------------------
-   GAME CONFIGURATION
--------------------------- */
-
-const TIME_LIMITS = {
-  1: 3 * 60,   // Very Easy
-  2: 6 * 60,   // Easy
-  3: 10 * 60,  // Medium
-  4: 15 * 60,  // Hard
-  5: 25 * 60   // Expert
+const DIFFICULTY_LABELS = {
+  1: "Very Easy",
+  2: "Easy",
+  3: "Medium",
+  4: "Hard",
+  5: "Expert"
 };
 
-/* -------------------------
-   GLOBAL STATE
--------------------------- */
+const DIFFICULTY_ORIENTATION = {
+  1: "Start with direct clues and simple eliminations.",
+  2: "Some clues depend on earlier deductions.",
+  3: "You’ll need to combine multiple clues together.",
+  4: "Clues interact heavily — take it slow.",
+  5: "Expert-level reasoning. No hints available."
+};
 
-const FILTERED_PUZZLES = PUZZLES.filter(
-  p => p.level === selectedLevel
-);
+/* =========================
+   GAME CONFIG
+========================= */
+
+const TIME_LIMITS = {
+  1: 3 * 60,
+  2: 6 * 60,
+  3: 10 * 60,
+  4: 15 * 60,
+  5: 25 * 60
+};
+
+/* =========================
+   GLOBAL STATE
+========================= */
 
 let currentPuzzleIndex = 0;
-let currentPuzzle = FILTERED_PUZZLES[currentPuzzleIndex];
-currentPuzzle = PUZZLES.find(p => p.id === "L2-P2");
-
-console.log("Current puzzle:", currentPuzzle.id);
-// TEMP: verify solver output for solver-ready puzzles only
-PUZZLES.forEach(puzzle => {
-
-  if (!isSolverReady(puzzle)) {
-    console.log(`Solver skipped for ${puzzle.id} (not solver-ready)`);
-    return;
-  }
-
-  const grid = createGrid(puzzle);
-  let changed;
-
-  do {
-    grid.resetChangeCount();
-
-    puzzle.clues.forEach(clue => {
-
-      if (clue.type === "EQUAL") {
-        applyEqual(clue, puzzle, grid);
-      }
-
-      if (clue.type === "NOT_EQUAL") {
-        applyNotEqual(clue, puzzle, grid);
-      }
-
-      if (clue.type === "RELATIVE_POSITION") {
-        applyRelativePosition(clue, puzzle, grid);
-      }
-
-    });
-
-    applyUniqueness(puzzle, grid);
-
-    changed = grid.getChangeCount() > 0;
-
-  } while (changed);
-
-  console.log(
-    `Solver result for ${puzzle.id}:`,
-    grid.getEliminations()
-  );
-});
-
-
-// Initialize grid for this puzzle
-// Initialize grid
-const grid = createGrid(currentPuzzle);
-
-// Run solver until stable
-let changed;
-
-if (isSolverReady(currentPuzzle)) {
-
-  do {
-    grid.resetChangeCount();
-
-    currentPuzzle.clues.forEach(clue => {
-
-      if (clue.type === "EQUAL") {
-        applyEqual(clue, currentPuzzle, grid);
-      }
-
-      if (clue.type === "NOT_EQUAL") {
-        applyNotEqual(clue, currentPuzzle, grid);
-      }
-
-      if (clue.type === "RELATIVE_POSITION") {
-        applyRelativePosition(clue, currentPuzzle, grid);
-      }
-
-    });
-
-    applyUniqueness(currentPuzzle, grid);
-
-    changed = grid.getChangeCount() > 0;
-
-  } while (changed);
-
-  console.log("Final solver eliminations:", grid.getEliminations());
-
-} else {
-  console.log(
-    `Solver skipped for ${currentPuzzle.id} (not solver-ready)`
-  );
-}
-
-
-
-
-// Inspect final solver output
-console.log("Final solver eliminations:", grid.getEliminations());
-
-
-// TEMP: log solver-derived eliminations
-console.log(
-  "Solver eliminations:",
-  grid.getEliminations()
-);
-// Compare solver vs manual eliminations
-const manual = currentPuzzle.eliminations || [];
-const solver = grid.getEliminations();
-
-// Solver eliminations that already exist manually
-const matched = solver.filter(s =>
-  manual.some(m =>
-    m.category === s.category &&
-    m.value === s.value &&
-    m.house === s.house
-  )
-);
-
-// Solver eliminations that are NEW
-const missing = solver.filter(s =>
-  !manual.some(m =>
-    m.category === s.category &&
-    m.value === s.value &&
-    m.house === s.house
-  )
-);
-// Build exactly 3 hints from solver output
-const hintGroups = grid.getHintsByStrength();
-
-selectedHints = [];
-hintIndex = 0;
-
-if (hintGroups.SOFT.length) {
-  selectedHints.push(hintGroups.SOFT[0]);
-}
-if (hintGroups.MEDIUM.length) {
-  selectedHints.push(hintGroups.MEDIUM[0]);
-}
-if (hintGroups.STRONG.length) {
-  selectedHints.push(hintGroups.STRONG[0]);
-}
-
-console.log("Selected hints:", selectedHints);
-console.log("Matched eliminations:", matched);
-console.log("New solver eliminations:", missing);
+let currentPuzzle = null;
+let grid = null;
+let currentLevel = 1;
+let currentPuzzleIndexInLevel = 0;
 
 let puzzleSolved = false;
-
 let timerInterval = null;
-let remainingTime = 0;
-let hintsUsed = 0;
-const MAX_HINTS = 3;
-let usedEliminations = [];
-let shownHints = [];
-/* -------------------------
-   BUILD GRID DYNAMICALLY
--------------------------- */
+let elapsedSeconds = 0;
+
+/* =========================
+   INITIAL VALIDATION
+========================= */
+
+PUZZLES.forEach(puzzle => validatePuzzle(puzzle));
+
+/* =========================
+   CORE FLOW
+========================= */
+function loadCurrentPuzzle() {
+  const puzzles = PUZZLES_BY_LEVEL[currentLevel];
+  currentPuzzle = puzzles[currentPuzzleIndexInLevel];
+
+  if (!currentPuzzle) return;
+
+  grid = createGrid(currentPuzzle);
+  puzzleSolved = false;
+  elapsedSeconds = 0;
+
+  updatePuzzleOrientation();
+  buildGrid();
+  populateDropdowns();
+  loadClues();
+  clearLiveWarning();
+  showPuzzleStatus("Solve the puzzle using the clues.");
+
+  enableGrid(true);
+  startTimer();
+}
+
+
+function initGame() {
+  loadCurrentPuzzle();
+}
+
+/* =========================
+   GRID RENDERING
+========================= */
 
 function buildGrid() {
-  const table = document.querySelector("#puzzle-grid tbody");
-  const headerRow = document.querySelector("#puzzle-grid thead tr");
+  const tbody = document.querySelector("#puzzle-grid tbody");
+  const header = document.querySelector("#puzzle-grid thead tr");
 
-  table.innerHTML = "";
-  headerRow.innerHTML = "<th></th>";
+  tbody.innerHTML = "";
+  header.innerHTML = "<th></th>";
 
   for (let i = 1; i <= currentPuzzle.houses; i++) {
     const th = document.createElement("th");
-    th.textContent = `House #${i}`;
-    headerRow.appendChild(th);
+    th.textContent = `House ${i}`;
+    header.appendChild(th);
   }
 
   Object.keys(currentPuzzle.categories).forEach(category => {
@@ -219,17 +118,14 @@ function buildGrid() {
       const td = document.createElement("td");
       const select = document.createElement("select");
       select.className = category.toLowerCase();
+      select.addEventListener("change", handleLiveCheck);
       td.appendChild(select);
       tr.appendChild(td);
     }
 
-    table.appendChild(tr);
+    tbody.appendChild(tr);
   });
 }
-
-/* -------------------------
-   DROPDOWNS
--------------------------- */
 
 function populateDropdowns() {
   Object.entries(currentPuzzle.categories).forEach(([category, values]) => {
@@ -237,155 +133,66 @@ function populateDropdowns() {
       .querySelectorAll(`select.${category.toLowerCase()}`)
       .forEach(select => {
         select.innerHTML = `<option value="">-- select --</option>`;
-        values.forEach(value => {
-          const option = document.createElement("option");
-          option.value = value;
-          option.textContent = value;
-          select.appendChild(option);
+        values.forEach(v => {
+          const opt = document.createElement("option");
+          opt.value = v;
+          opt.textContent = v;
+          select.appendChild(opt);
         });
-        select.addEventListener("change", handleLiveCheck);
       });
   });
 }
 
-/* -------------------------
+/* =========================
    CLUES
--------------------------- */
-function renderClue(clue) {
-  // Old puzzles (string clues)
-  if (typeof clue === "string") {
-    return clue;
-  }
-
-  // Structured clues (new automation-ready format)
-  if (clue.type === "NOT_EQUAL") {
-    return `${clue.left.value} does not have ${clue.right.value}.`;
-  }
-
-  if (clue.type === "EQUAL") {
-    return `${clue.left.value} is associated with ${clue.right.value}.`;
-  }
-
-  // Fallback (safety)
-  return "Unknown clue format.";
-}
+========================= */
 
 function loadClues() {
-  const cluesList = document.querySelector("#clues-list");
-  cluesList.innerHTML = "";
+  const ul = document.getElementById("clues-list");
+  ul.innerHTML = "";
 
   currentPuzzle.clues.forEach(clue => {
     const li = document.createElement("li");
-   li.textContent = renderClue(clue);
-    cluesList.appendChild(li);
+    li.textContent = formatClue(clue);
+    ul.appendChild(li);
   });
 }
 
-/* -------------------------
-   HELPERS
--------------------------- */
-function isSolverReady(puzzle) {
-  return puzzle.clues.every(clue => typeof clue === "object");
-}
-function resetGrid() {
-  // Show confirmation only if reset is late
-  if (isLateReset()) {
-    const confirmReset = confirm(
-      "You’ve spent some time on this puzzle.\n" +
-      "Resetting will clear your progress.\n\n" +
-      "Do you want to continue?"
-    );
-
-    if (!confirmReset) return;
-  }
-
-  // Perform the actual reset
-  document.querySelectorAll("select").forEach(select => {
-    select.selectedIndex = 0;
-    select.style.backgroundColor = "";
-    select.disabled = false;
-  });
-
-  clearLiveWarning();
-  showPuzzleStatus("Solve the puzzle using the clues.");
-}
-
-function isLateReset() {
-  const totalTime = TIME_LIMITS[currentPuzzle.level];
-  if (!totalTime) return false;
-
-  // Guard: timer not started or just initialized
-  if (remainingTime === 0 || remainingTime === totalTime) return false;
-
-  const timeUsed = totalTime - remainingTime;
-  return timeUsed / totalTime >= 0.4; // 40% threshold
-}
-
-
-function enableGrid(enable) {
-  document.querySelectorAll("select").forEach(select => {
-    select.disabled = !enable;
-  });
-}
-
-function showPuzzleStatus(message) {
-  document.getElementById("puzzle-status").textContent = message;
-}
-
-function showLiveWarning(message) {
-  document.getElementById("live-warning").innerHTML = message;
-}
-
-
-function clearLiveWarning() {
-  document.getElementById("live-warning").textContent = "";
-}
-function clearHints() {
-  const container = document.getElementById("hints-list");
-  if (container) {
-    container.innerHTML = "";
+function formatClue(clue) {
+  switch (clue.type) {
+    case "EQUAL":
+      return `${clue.left.value} is associated with ${clue.right.value}.`;
+    case "NOT_EQUAL":
+      return `${clue.left.value} is not associated with ${clue.right.value}.`;
+    case "RELATIVE_POSITION":
+      return formatRelative(clue);
+    default:
+      return "Clue unavailable.";
   }
 }
-function showAttemptSummary(status) {
-  const totalTime = TIME_LIMITS[currentPuzzle.level];
-  const timeUsed = totalTime - remainingTime;
 
-  let header = "";
-  if (status === "solved") {
-    header = "🎉 Puzzle solved!";
-  } else if (status === "timeout") {
-    header = "⏱ Time’s up.";
+function formatRelative(clue) {
+  const l = clue.left.value;
+  const r = clue.right.value;
+
+  switch (clue.relation) {
+    case "LEFT_OF": return `${l} is somewhere to the left of ${r}.`;
+    case "RIGHT_OF": return `${l} is somewhere to the right of ${r}.`;
+    case "IMMEDIATELY_BEFORE": return `${l} is immediately before ${r}.`;
+    case "ADJACENT": return `${l} is next to ${r}.`;
+    default: return "Relative position clue.";
   }
-
-  const summary =
-    `${header}<br>` +
-    `⏱ Time used: ${formatTime(timeUsed)}<br>` +
-    `💡 Hints used: ${hintsUsed} / ${MAX_HINTS}`;
-
-  showPuzzleStatus(summary);
 }
 
-/* -------------------------
-   TIMER
--------------------------- */
+/* =========================
+   TIMER (TRACKING ONLY)
+========================= */
 
 function startTimer() {
   clearInterval(timerInterval);
-
-  const limit = TIME_LIMITS[currentPuzzle.level];
-  if (!limit) return;
-
-  remainingTime = limit;
-  updateTimerDisplay();
-
   timerInterval = setInterval(() => {
-    remainingTime--;
-    updateTimerDisplay();
-
-    if (remainingTime <= 0) {
-      clearInterval(timerInterval);
-      handleTimeUp();
-    }
+    elapsedSeconds++;
+    updateTimer();
   }, 1000);
 }
 
@@ -393,227 +200,178 @@ function stopTimer() {
   clearInterval(timerInterval);
 }
 
-function updateTimerDisplay() {
-  const timerEl = document.getElementById("timer");
-  if (!timerEl) return;
-
-  const minutes = Math.floor(remainingTime / 60);
-  const seconds = remainingTime % 60;
-
-  timerEl.textContent =
-    `Time: ${minutes}:${seconds.toString().padStart(2, "0")}`;
+function updateTimer() {
+  const el = document.getElementById("timer");
+  const min = Math.floor(elapsedSeconds / 60);
+  const sec = elapsedSeconds % 60;
+  el.textContent = `Time: ${min}:${sec.toString().padStart(2, "0")}`;
 }
 
-function handleTimeUp() {
-  puzzleSolved = true;
-  enableGrid(false);
-  showPuzzleStatus("⏱ Time’s up. You can move to the next puzzle.");
-  clearLiveWarning();
-  showAttemptSummary("timeout");
-
-}
-
-/* -------------------------
+/* =========================
    ANSWER CHECK
--------------------------- */
+========================= */
 
 function checkAnswers() {
   const solution = currentPuzzle.solution;
   const rows = document.querySelectorAll("#puzzle-grid tbody tr");
 
-  let correctCount = 0;
-  let totalChecked = 0;
-  let hasConstraintViolation = false;
+  let correct = 0;
+  let filled = 0;
 
   rows.forEach(row => {
     const category = row.firstChild.textContent.trim();
-    const seenValues = {};
 
     for (let h = 1; h <= currentPuzzle.houses; h++) {
-      const dropdown = row.children[h].querySelector("select");
-      const userValue = dropdown.value;
-      dropdown.style.backgroundColor = "";
+      const select = row.children[h].querySelector("select");
+      const value = select.value;
+      select.style.backgroundColor = "";
 
-      if (!userValue) continue;
-      totalChecked++;
+      if (!value) continue;
+      filled++;
 
-      if (seenValues[userValue]) {
-        dropdown.style.backgroundColor = "#f8d7da";
-        seenValues[userValue].style.backgroundColor = "#f8d7da";
-        hasConstraintViolation = true;
+      if (value === solution[`House${h}`][category]) {
+        select.style.backgroundColor = "#d4edda";
+        correct++;
       } else {
-        seenValues[userValue] = dropdown;
-      }
-
-      const houseKey = `House${h}`;
-      if (userValue === solution[houseKey][category]) {
-        dropdown.style.backgroundColor = "#d4edda";
-        correctCount++;
-      } else if (!hasConstraintViolation) {
-        dropdown.style.backgroundColor = "#f8d7da";
+        select.style.backgroundColor = "#f8d7da";
       }
     }
   });
 
-  if (totalChecked === 0) return;
+  if (filled === 0) return;
 
-  if (hasConstraintViolation) {
-    showPuzzleStatus("❌ Fix the contradictions before checking again.");
-    return;
-  }
-
-  if (correctCount === totalChecked) {
+  if (correct === filled) {
     puzzleSolved = true;
-    enableGrid(false);
     stopTimer();
-    showPuzzleStatus("🎉 Puzzle solved! You may proceed to the next puzzle.");
-    clearLiveWarning();
-    showAttemptSummary("solved");
+    enableGrid(false);
+    showCompletionPanel("Puzzle Completed", "Solved using logical deduction.");
   }
 }
 
-/* -------------------------
+/* =========================
    LIVE CONTRADICTION CHECK
--------------------------- */
+========================= */
+
 function handleLiveCheck() {
   if (puzzleSolved) return;
-  validateAllConstraints();
-}
-function validateAllConstraints() {
+
   const rows = document.querySelectorAll("#puzzle-grid tbody tr");
   let warnings = [];
 
   rows.forEach(row => {
     const category = row.firstChild.textContent.trim();
-    const selects = row.querySelectorAll("select");
+    const seen = {};
 
-    // Clear previous styles for this row
-    selects.forEach(s => {
-      s.style.backgroundColor = "";
-    });
+    row.querySelectorAll("select").forEach(sel => {
+      sel.style.backgroundColor = "";
+      if (!sel.value) return;
 
-    const valueMap = {};
-
-    // Build value → selects map
-    selects.forEach(select => {
-      const val = select.value;
-      if (!val) return;
-
-      if (!valueMap[val]) {
-        valueMap[val] = [];
-      }
-      valueMap[val].push(select);
-    });
-
-    // Detect duplicates
-    Object.entries(valueMap).forEach(([value, group]) => {
-      if (group.length > 1) {
-        warnings.push(
-          `Contradiction: "${value}" appears more than once in ${category}.`
-        );
-        group.forEach(select => {
-          select.style.backgroundColor = "#f8d7da";
-        });
+      if (seen[sel.value]) {
+        warnings.push(`"${sel.value}" appears twice in ${category}.`);
+        sel.style.backgroundColor = "#f8d7da";
+        seen[sel.value].style.backgroundColor = "#f8d7da";
+      } else {
+        seen[sel.value] = sel;
       }
     });
   });
 
-  // Update warning UI
-  if (warnings.length > 0) {
+  if (warnings.length) {
     showLiveWarning(warnings.join("<br>"));
   } else {
     clearLiveWarning();
   }
 }
 
+/* =========================
+   UI HELPERS
+========================= */
 
+function enableGrid(enable) {
+  document.querySelectorAll("select").forEach(s => s.disabled = !enable);
+}
 
+function showPuzzleStatus(msg) {
+  document.getElementById("puzzle-status").textContent = msg;
+}
 
+function showLiveWarning(msg) {
+  document.getElementById("live-warning").innerHTML = msg;
+}
 
-/* -------------------------
+function clearLiveWarning() {
+  document.getElementById("live-warning").textContent = "";
+}
+
+function updatePuzzleOrientation() {
+  document.getElementById("puzzle-title").textContent =
+    `${currentPuzzle.title} — Level ${currentPuzzle.level} (${DIFFICULTY_LABELS[currentPuzzle.level]})`;
+
+  document.getElementById("puzzle-orientation").textContent =
+    DIFFICULTY_ORIENTATION[currentPuzzle.level];
+}
+
+/* =========================
    NAVIGATION
--------------------------- */
-
+========================= */
 function nextPuzzle() {
-  currentPuzzleIndex++;
-  hintIndex = 0;
-  selectedHints = [];
-  document.getElementById("hints-list").innerHTML = "";
+  const puzzles = PUZZLES_BY_LEVEL[currentLevel];
 
-  if (currentPuzzleIndex >= PUZZLES.length) {
-    currentPuzzleIndex = PUZZLES.length - 1;
+  // If another puzzle exists at this level
+  if (currentPuzzleIndexInLevel < puzzles.length - 1) {
+    showPuzzleStatus(
+      "You’ve completed this puzzle. Another puzzle at this level is available."
+    );
+    currentPuzzleIndexInLevel++;
+    initGame();
     return;
   }
 
-  currentPuzzle = PUZZLES[currentPuzzleIndex];
-  initGame();
-}
-function updateHintButton() {
-  const btn = document.getElementById("hint-btn");
-  if (!btn) return;
-
-  btn.textContent = `Hint (${MAX_HINTS - hintsUsed})`;
-  btn.disabled = hintsUsed >= MAX_HINTS;
+  // No more puzzles at this level
+  showCompletionPanel(
+    "Level Completed",
+    "You’ve completed the available puzzle for this level. Come back later for more."
+  );
 }
 
-
-function applyEliminationHint(hint) {
-  const row = findRowByCategory(hint.category);
-  if (!row) return;
-
-  const select = row.children[hint.house].querySelector("select");
-  if (!select) return;
-
-  // Visual cue only — no auto-selection
-  select.style.backgroundColor = "#fff3cd"; // soft yellow
+function goToLevelSelect() {
+  window.location.href = "index.html";
 }
-function findRowByCategory(categoryName) {
-  const rows = document.querySelectorAll("#puzzle-grid tbody tr");
-  for (const row of rows) {
-    if (row.firstChild.textContent.trim() === categoryName) {
-      return row;
-    }
-  }
-  return null;
-}
+
 function giveHint() {
-  if (hintIndex >= selectedHints.length) {
-    document.getElementById("hints-list").innerHTML +=
-      "<div>No more hints available.</div>";
-    return;
-  }
-
-  const hint = selectedHints[hintIndex];
-  hintIndex++;
-
-  document.getElementById("hints-list").innerHTML +=
-    `<div>• ${hint.reason.explanation}</div>`;
+  showPuzzleStatus("Hints are not available for this puzzle.");
 }
 
-// Make it available to HTML
+/* =========================
+   COMPLETION PANEL
+========================= */
+
+function showCompletionPanel(title, message) {
+  document.getElementById("completion-title").textContent = title;
+  document.getElementById("completion-message").textContent = message;
+  document.getElementById("completion-panel").style.display = "block";
+}
+
+function hideCompletionPanel() {
+  document.getElementById("completion-panel").style.display = "none";
+}
+
+/* =========================
+   EXPORT TO HTML
+========================= */
+
+window.checkAnswers = checkAnswers;
+window.goToLevelSelect = goToLevelSelect;
+window.resetGrid = initGame;
+window.nextPuzzle = nextPuzzle;
 window.giveHint = giveHint;
+window.retryPuzzle = () => {
+  hideCompletionPanel();
+  initGame();
+};
 
-/* -------------------------
-   INIT
--------------------------- */
-function initGame() {
-  puzzleSolved = false;
-  hintsUsed = 0;
-  usedEliminations = [];
-  shownHints = [];
-
-  buildGrid();
-  populateDropdowns();
-  loadClues();
-  resetGrid();
-  clearLiveWarning();
-  clearHints(); // ✅ CLEAR OLD HINTS HERE
-
-  showPuzzleStatus("Solve the puzzle using the clues.");
-  enableGrid(true);
-  startTimer();
-  updateHintButton();
-}
-
+/* =========================
+   START
+========================= */
 
 initGame();

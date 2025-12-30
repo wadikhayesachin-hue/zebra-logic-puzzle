@@ -2,48 +2,63 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Zebra Logic Puzzle</title>
+  <title>LogicGrid</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<h2 id="puzzle-title">Zebra Logic Puzzle</h2>
+<div class="puzzle-container">
 
+  <h2 id="puzzle-title"></h2>
 
-<div id="timer" style="margin-bottom:10px; font-weight:bold;">
-  Time: --
+  <p id="puzzle-orientation" class="orientation-text"></p>
+
+  <p class="rule-reminder">
+    Each category appears exactly once in every column. Use the clues to eliminate possibilities.
+  </p>
+
+  <div id="timer" style="margin-bottom:10px; font-weight:bold;">
+    Time: --
+  </div>
+
+  <table id="puzzle-grid">
+    <thead>
+      <tr id="column-labels">
+        <!-- Column labels injected dynamically -->
+      </tr>
+    </thead>
+    <tbody id="grid-body">
+        <!-- Grid rows injected dynamically -->
+    </tbody>
+  </table>
+
+  <div class="controls">
+    <button onclick="resetGrid()">Reset</button>
+    <button onclick="checkAnswers()">Check Progress</button>
+    
+  </div>
+
+  <div id="live-warning" style="color:#a94442; margin-top:10px;"></div>
+
+  <h3>Clues</h3>
+  <ul id="clues-list"></ul>
+
+  <div id="puzzle-status" style="margin-top:10px; font-weight:bold;"></div>
+
+  <!-- Completion Panel -->
+  <div id="completion-panel" class="completion-panel" style="display:none;">
+    <h3 id="completion-title"></h3>
+    <p id="completion-message"></p>
+
+    <div class="completion-actions">
+      <button onclick="retryPuzzle()">Retry Puzzle</button>
+      <button onclick="nextPuzzle()">Try Another Puzzle</button>
+      <button onclick="goToLevelSelect()">Choose Difficulty</button>
+    </div>
+  </div>
+
 </div>
 
-
-
-<table id="puzzle-grid">
-  <thead>
-    <tr id="column-labels">
-      <!-- Column labels will be injected dynamically -->
-    </tr>
-  </thead>
-
-  <tbody id="grid-body">
-    <!-- Rows will be injected dynamically -->
-  </tbody>
-</table>
-
-<div class="controls">
-  <button onclick="resetGrid()">Reset</button>
-  <button onclick="checkAnswers()">Check Answers</button>
-  <button id="hint-btn" onclick="giveHint()">Hint (3)</button>
-
-  <button onclick="nextPuzzle()">Next Puzzle</button>
-</div>
-<div id="live-warning" style="color:#a94442; margin-top:10px;"></div>
-
-<h3>Clues</h3>
-<ul id="clues-list"></ul>
-<div id="puzzle-status" style="margin-top:10px; font-weight:bold;"></div>
-<div id="hints-container" style="margin-top:10px;">
-  <strong>Hints:</strong>
-  <div id="hints-list"></div>
-</div>
 <script type="module" src="script.js"></script>
 </body>
 </html>

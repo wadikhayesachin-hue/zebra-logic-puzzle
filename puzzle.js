@@ -1,4 +1,3 @@
-console.log("Puzzle JS loaded");
 
 export const PUZZLES = [
 
@@ -18,22 +17,33 @@ export const PUZZLES = [
     City: ["Delhi", "Pune", "Jaipur"]
   },
   clues: [
-    {
-      type: "NOT_EQUAL",
-      left:  { category: "Person", value: "Amit" },
-      right: { category: "Drink", value: "Coffee" }
-    },
-    {
-      type: "EQUAL",
-      left:  { category: "City", value: "Pune" },
-      right: { category: "Drink", value: "Tea" }
-    },
-    {
-      type: "EQUAL",
-      left:  { category: "Person", value: "Neha" },
-      right: { category: "City", value: "Jaipur" }
-    }
-  ],
+  {
+    type: "EQUAL",
+    left: { category: "City", value: "Pune" },
+    right:{ category: "Drink", value: "Tea" }
+  },
+  {
+    type: "EQUAL",
+    left: { category: "Person", value: "Neha" },
+    right:{ category: "City", value: "Jaipur" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Person", value: "Amit" },
+    right:{ category: "Drink", value: "Coffee" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "City", value: "Delhi" },
+    right:{ category: "Drink", value: "Juice" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Person", value: "Ravi" },
+    right:{ category: "City", value: "Jaipur" }
+  }
+],
+
   
   solution: {
     House1: { Person: "Amit", Drink: "Tea", City: "Delhi" },
@@ -55,20 +65,31 @@ export const PUZZLES = [
 clues: [
   {
     type: "EQUAL",
-    left:  { category: "Pet", value: "Dog" },
-    right: { category: "Color", value: "Red" }
-  },
-  {
-    type: "NOT_EQUAL",
-    left:  { category: "Person", value: "Sonia" },
-    right: { category: "Pet", value: "Fish" }
+    left: { category: "Pet", value: "Dog" },
+    right:{ category: "Color", value: "Red" }
   },
   {
     type: "EQUAL",
-    left:  { category: "Person", value: "Karan" },
-    right: { category: "Color", value: "Blue" }
+    left: { category: "Person", value: "Karan" },
+    right:{ category: "Color", value: "Blue" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Person", value: "Sonia" },
+    right:{ category: "Pet", value: "Fish" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Color", value: "Green" },
+    right:{ category: "Pet", value: "Dog" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Person", value: "Rahul" },
+    right:{ category: "Color", value: "Blue" }
   }
 ],
+
 
   
   solution: {
@@ -92,28 +113,39 @@ clues: [
     Tradition: ["Diwali", "Eid", "Pongal", "Navratri"],
     Color: ["Red", "Blue", "Green", "Yellow"]
   },
-  clues: [
+ clues: [
   {
     type: "NOT_EQUAL",
-    left:  { category: "Family", value: "Sharma" },
-    right: { category: "Tradition", value: "Eid" }
+    left: { category: "Family", value: "Sharma" },
+    right:{ category: "Tradition", value: "Eid" }
   },
   {
     type: "EQUAL",
-    left:  { category: "Color", value: "Blue" },
-    right: { category: "Tradition", value: "Pongal" }
+    left: { category: "Color", value: "Blue" },
+    right:{ category: "Tradition", value: "Pongal" }
   },
   {
     type: "EQUAL",
-    left:  { category: "Family", value: "Patel" },
-    right: { category: "Color", value: "Yellow" }
+    left: { category: "Family", value: "Patel" },
+    right:{ category: "Color", value: "Yellow" }
   },
   {
     type: "EQUAL",
-    left:  { category: "Color", value: "Green" },
-    right: { category: "Tradition", value: "Diwali" }
+    left: { category: "Color", value: "Green" },
+    right:{ category: "Tradition", value: "Diwali" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Family", value: "Khan" },
+    right:{ category: "Color", value: "Yellow" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Tradition", value: "Navratri" },
+    right:{ category: "Color", value: "Blue" }
   }
 ],
+
 
  
   solution: {
@@ -137,26 +169,32 @@ clues: [
   clues: [
   {
     type: "NOT_EQUAL",
-    left:  { category: "Person", value: "Meera" },
-    right: { category: "Activity", value: "Shopping" }
+    left: { category: "Person", value: "Meera" },
+    right:{ category: "Activity", value: "Shopping" }
   },
   {
     type: "RELATIVE_POSITION",
-    left:  { category: "Activity", value: "Hiking" },
-    right: { category: "Day", value: "Sunday" },
+    left: { category: "Activity", value: "Hiking" },
+    right:{ category: "Day", value: "Sunday" },
     relation: "IMMEDIATELY_BEFORE"
   },
   {
     type: "EQUAL",
-    left:  { category: "Person", value: "Anu" },
-    right: { category: "Day", value: "Friday" }
+    left: { category: "Person", value: "Anu" },
+    right:{ category: "Day", value: "Friday" }
   },
   {
     type: "NOT_EQUAL",
-    left:  { category: "Activity", value: "Movie" },
-    right: { category: "Day", value: "Monday" }
+    left: { category: "Activity", value: "Movie" },
+    right:{ category: "Day", value: "Monday" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Person", value: "Vikram" },
+    right:{ category: "Day", value: "Friday" }
   }
 ],
+
 
  
   solution: {
@@ -176,55 +214,114 @@ clues: [
   level: 3,
   title: "Office Seating",
   houses: 4,
+
   categories: {
     Person: ["Ajay", "Bhavna", "Chirag", "Divya"],
     Role: ["Manager", "Designer", "Engineer", "Tester"],
     Drink: ["Tea", "Coffee", "Juice", "Water"],
     Desk: ["Near Window", "Corner", "Center", "Entrance"]
   },
-  clues: [
-    "The Manager sits near the Window.",
-    "Bhavna drinks Juice.",
-    "The Engineer does not sit at the Corner.",
-    "Divya is not the Tester.",
-    "The person at the Entrance drinks Water."
-  ],
-  eliminations: [
-    { category: "Role", value: "Tester", house: 4 },
-    { category: "Drink", value: "Coffee", house: 4 },
-    { category: "Desk", value: "Corner", house: 3 }
-  ],
+
+ clues: [
+  {
+    type: "EQUAL",
+    left: { category: "Role", value: "Manager" },
+    right:{ category: "Desk", value: "Near Window" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Person", value: "Bhavna" },
+    right:{ category: "Drink", value: "Coffee" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Role", value: "Engineer" },
+    right:{ category: "Desk", value: "Corner" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Person", value: "Divya" },
+    right:{ category: "Role", value: "Tester" }
+  },
+  {
+    type: "EQUAL",
+    left: { category: "Desk", value: "Entrance" },
+    right:{ category: "Drink", value: "Water" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Person", value: "Ajay" },
+    right:{ category: "Drink", value: "Juice" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Desk", value: "Center" },
+    right:{ category: "Drink", value: "Water" }
+  }
+]
+,
+
   solution: {
     House1: { Person: "Ajay", Role: "Manager", Drink: "Tea", Desk: "Near Window" },
     House2: { Person: "Bhavna", Role: "Designer", Drink: "Juice", Desk: "Center" },
     House3: { Person: "Chirag", Role: "Engineer", Drink: "Coffee", Desk: "Corner" },
     House4: { Person: "Divya", Role: "Tester", Drink: "Water", Desk: "Entrance" }
   }
-},
+}
+,
 
 {
   id: "L3-P2",
   level: 3,
   title: "School Clubs",
   houses: 4,
+
   categories: {
     Student: ["Aarav", "Diya", "Kabir", "Riya"],
     Club: ["Music", "Drama", "Robotics", "Sports"],
     Grade: ["6", "7", "8", "9"],
     Bag: ["Red", "Blue", "Green", "Black"]
   },
+
   clues: [
-    "The Robotics student is in Grade 9.",
-    "Diya is not in the Music club.",
-    "The student with the Black bag is in Grade 7.",
-    "Kabir is in the Sports club.",
-    "Grade 6 student carries a Red bag."
-  ],
-  eliminations: [
-    { category: "Club", value: "Music", house: 2 },
-    { category: "Grade", value: "6", house: 4 },
-    { category: "Bag", value: "Black", house: 1 }
-  ],
+  {
+    type: "EQUAL",
+    left: { category: "Club", value: "Robotics" },
+    right:{ category: "Grade", value: "9" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Student", value: "Diya" },
+    right:{ category: "Club", value: "Music" }
+  },
+  {
+    type: "EQUAL",
+    left: { category: "Bag", value: "Black" },
+    right:{ category: "Grade", value: "7" }
+  },
+  {
+    type: "EQUAL",
+    left: { category: "Student", value: "Kabir" },
+    right:{ category: "Club", value: "Sports" }
+  },
+  {
+    type: "EQUAL",
+    left: { category: "Grade", value: "6" },
+    right:{ category: "Bag", value: "Red" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Student", value: "Riya" },
+    right:{ category: "Bag", value: "Red" }
+  },
+  {
+    type: "NOT_EQUAL",
+    left: { category: "Club", value: "Drama" },
+    right:{ category: "Grade", value: "9" }
+  }
+]
+,
+
   solution: {
     House1: { Student: "Aarav", Club: "Music", Grade: "6", Bag: "Red" },
     House2: { Student: "Diya", Club: "Drama", Grade: "7", Bag: "Black" },
@@ -236,31 +333,32 @@ clues: [
 /* =========================
    LEVEL 4 – HARD
 ========================= */
-
 {
   id: "L4-P1",
   level: 4,
   title: "Travel Diaries",
   houses: 5,
+
   categories: {
     Traveler: ["Ankit", "Bhavya", "Chetan", "Deepa", "Esha"],
     Country: ["Japan", "France", "Italy", "Spain", "Brazil"],
     Transport: ["Plane", "Train", "Ship", "Car", "Bus"],
     Month: ["Jan", "Feb", "Mar", "Apr", "May"]
   },
+
   clues: [
-    "Ankit did not travel in March.",
-    "The traveler to Japan went by Plane.",
-    "Deepa traveled in April.",
-    "The Bus traveler went to Brazil.",
-    "Chetan did not use the Train.",
-    "The Italy trip was in February."
-  ],
-  eliminations: [
-    { category: "Month", value: "Mar", house: 1 },
-    { category: "Transport", value: "Train", house: 3 },
-    { category: "Country", value: "Japan", house: 2 }
-  ],
+  { type:"NOT_EQUAL", left:{category:"Traveler",value:"Ankit"}, right:{category:"Month",value:"Mar"} },
+  { type:"EQUAL", left:{category:"Country",value:"Japan"}, right:{category:"Transport",value:"Plane"} },
+  { type:"NOT_EQUAL", left:{category:"Traveler",value:"Deepa"}, right:{category:"Month",value:"Mar"} },
+  { type:"EQUAL", left:{category:"Transport",value:"Bus"}, right:{category:"Country",value:"Brazil"} },
+  { type:"NOT_EQUAL", left:{category:"Traveler",value:"Chetan"}, right:{category:"Transport",value:"Train"} },
+  { type:"EQUAL", left:{category:"Country",value:"Italy"}, right:{category:"Month",value:"Feb"} },
+  { type:"NOT_EQUAL", left:{category:"Country",value:"Japan"}, right:{category:"Month",value:"Jan"} },
+  { type:"NOT_EQUAL", left:{category:"Transport",value:"Car"}, right:{category:"Month",value:"May"} },
+  { type:"NOT_EQUAL", left:{category:"Traveler",value:"Bhavya"}, right:{category:"Country",value:"Brazil"} }
+]
+,
+
   solution: {
     House1: { Traveler: "Ankit", Country: "France", Transport: "Train", Month: "Jan" },
     House2: { Traveler: "Bhavya", Country: "Italy", Transport: "Car", Month: "Feb" },
@@ -268,32 +366,35 @@ clues: [
     House4: { Traveler: "Deepa", Country: "Brazil", Transport: "Bus", Month: "Apr" },
     House5: { Traveler: "Esha", Country: "Japan", Transport: "Plane", Month: "May" }
   }
-},
+}
+,
 
 {
   id: "L4-P2",
   level: 4,
   title: "Startup Teams",
   houses: 5,
+
   categories: {
     Founder: ["Arjun", "Neel", "Pooja", "Sameer", "Tara"],
     Startup: ["FinTech", "EdTech", "Health", "AI", "Ecommerce"],
     City: ["Bangalore", "Mumbai", "Delhi", "Pune", "Hyderabad"],
     Funding: ["Bootstrapped", "Seed", "Series A", "Series B", "IPO"]
   },
+
   clues: [
-    "The AI startup is based in Bangalore.",
-    "Pooja founded the Health startup.",
-    "The Mumbai startup is Bootstrapped.",
-    "Sameer did not found the FinTech company.",
-    "The Series B startup is in Delhi.",
-    "Neel’s startup is not Ecommerce."
-  ],
-  eliminations: [
-    { category: "Startup", value: "Ecommerce", house: 2 },
-    { category: "City", value: "Mumbai", house: 5 },
-    { category: "Founder", value: "Sameer", house: 1 }
-  ],
+  { type:"EQUAL", left:{category:"Startup",value:"AI"}, right:{category:"City",value:"Bangalore"} },
+  { type:"NOT_EQUAL", left:{category:"Founder",value:"Pooja"}, right:{category:"Startup",value:"FinTech"} },
+  { type:"EQUAL", left:{category:"City",value:"Mumbai"}, right:{category:"Funding",value:"Bootstrapped"} },
+  { type:"NOT_EQUAL", left:{category:"Founder",value:"Sameer"}, right:{category:"Startup",value:"FinTech"} },
+  { type:"EQUAL", left:{category:"Funding",value:"Series B"}, right:{category:"City",value:"Delhi"} },
+  { type:"NOT_EQUAL", left:{category:"Founder",value:"Neel"}, right:{category:"Startup",value:"Ecommerce"} },
+  { type:"NOT_EQUAL", left:{category:"City",value:"Bangalore"}, right:{category:"Startup",value:"FinTech"} },
+  { type:"NOT_EQUAL", left:{category:"Funding",value:"IPO"}, right:{category:"City",value:"Mumbai"} },
+  { type:"NOT_EQUAL", left:{category:"Founder",value:"Tara"}, right:{category:"City",value:"Delhi"} }
+]
+,
+
   solution: {
     House1: { Founder: "Arjun", Startup: "FinTech", City: "Pune", Funding: "Seed" },
     House2: { Founder: "Neel", Startup: "EdTech", City: "Hyderabad", Funding: "IPO" },
@@ -301,7 +402,8 @@ clues: [
     House4: { Founder: "Sameer", Startup: "Ecommerce", City: "Delhi", Funding: "Series B" },
     House5: { Founder: "Tara", Startup: "AI", City: "Bangalore", Funding: "Series A" }
   }
-},
+}
+,
 
 /* =========================
    LEVEL 5 – EXPERT
@@ -312,6 +414,7 @@ clues: [
   level: 5,
   title: "Luxury Apartments",
   houses: 5,
+
   categories: {
     Owner: ["A", "B", "C", "D", "E"],
     Floor: ["1", "2", "3", "4", "5"],
@@ -319,19 +422,22 @@ clues: [
     Pet: ["Dog", "Cat", "Bird", "Fish", "None"],
     Drink: ["Tea", "Coffee", "Juice", "Wine", "Water"]
   },
+
   clues: [
-    "The Tesla owner lives on Floor 5.",
-    "Owner C drinks Wine.",
-    "The person with the Dog lives above the Audi owner.",
-    "Floor 1 owner has no pet.",
-    "The Mercedes owner drinks Coffee.",
-    "Owner A does not live on Floor 3 or 4."
-  ],
-  eliminations: [
-    { category: "Floor", value: "3", house: 2 },
-    { category: "Floor", value: "4", house: 2 },
-    { category: "Pet", value: "Dog", house: 1 }
-  ],
+  { type:"RELATIVE_POSITION", left:{category:"Pet",value:"Dog"}, right:{category:"Car",value:"Audi"}, relation:"RIGHT_OF" },
+  { type:"NOT_EQUAL", left:{category:"Car",value:"Tesla"}, right:{category:"Floor",value:"1"} },
+  { type:"NOT_EQUAL", left:{category:"Car",value:"Tesla"}, right:{category:"Floor",value:"2"} },
+  { type:"NOT_EQUAL", left:{category:"Owner",value:"C"}, right:{category:"Drink",value:"Coffee"} },
+  { type:"NOT_EQUAL", left:{category:"Floor",value:"1"}, right:{category:"Pet",value:"Dog"} },
+  { type:"NOT_EQUAL", left:{category:"Owner",value:"A"}, right:{category:"Floor",value:"3"} },
+  { type:"NOT_EQUAL", left:{category:"Owner",value:"A"}, right:{category:"Floor",value:"4"} },
+  { type:"NOT_EQUAL", left:{category:"Car",value:"Mercedes"}, right:{category:"Drink",value:"Water"} },
+  { type:"NOT_EQUAL", left:{category:"Pet",value:"Bird"}, right:{category:"Floor",value:"4"} },
+  { type:"NOT_EQUAL", left:{category:"Drink",value:"Wine"}, right:{category:"Floor",value:"2"} },
+  { type:"NOT_EQUAL", left:{category:"Car",value:"Volvo"}, right:{category:"Pet",value:"Cat"} }
+]
+,
+
   solution: {
     House1: { Owner: "B", Floor: "1", Car: "BMW", Pet: "None", Drink: "Tea" },
     House2: { Owner: "A", Floor: "2", Car: "Audi", Pet: "Cat", Drink: "Water" },
@@ -339,13 +445,15 @@ clues: [
     House4: { Owner: "D", Floor: "4", Car: "Mercedes", Pet: "Dog", Drink: "Coffee" },
     House5: { Owner: "E", Floor: "5", Car: "Tesla", Pet: "Fish", Drink: "Juice" }
   }
-},
+}
+,
 
 {
   id: "L5-P2",
   level: 5,
   title: "Global Conference",
   houses: 5,
+
   categories: {
     Speaker: ["Alpha", "Beta", "Gamma", "Delta", "Omega"],
     Topic: ["AI", "Climate", "Economics", "Health", "Security"],
@@ -353,19 +461,22 @@ clues: [
     Time: ["9AM", "11AM", "1PM", "3PM", "5PM"],
     Hall: ["A", "B", "C", "D", "E"]
   },
-  clues: [
-    "The AI talk is at 9AM.",
-    "Gamma speaks in Hall C.",
-    "The speaker from Japan talks at 3PM.",
-    "The Economics talk is not in Hall A.",
-    "Delta is not from USA.",
-    "The Brazil speaker talks at 5PM."
-  ],
-  eliminations: [
-    { category: "Country", value: "USA", house: 4 },
-    { category: "Hall", value: "A", house: 3 },
-    { category: "Time", value: "5PM", house: 1 }
-  ],
+
+ clues: [
+  { type:"NOT_EQUAL", left:{category:"Topic",value:"AI"}, right:{category:"Time",value:"11AM"} },
+  { type:"NOT_EQUAL", left:{category:"Topic",value:"AI"}, right:{category:"Time",value:"1PM"} },
+  { type:"NOT_EQUAL", left:{category:"Speaker",value:"Gamma"}, right:{category:"Hall",value:"A"} },
+  { type:"NOT_EQUAL", left:{category:"Speaker",value:"Gamma"}, right:{category:"Hall",value:"E"} },
+  { type:"NOT_EQUAL", left:{category:"Country",value:"Japan"}, right:{category:"Time",value:"9AM"} },
+  { type:"NOT_EQUAL", left:{category:"Country",value:"Japan"}, right:{category:"Time",value:"5PM"} },
+  { type:"NOT_EQUAL", left:{category:"Topic",value:"Economics"}, right:{category:"Hall",value:"A"} },
+  { type:"NOT_EQUAL", left:{category:"Country",value:"Brazil"}, right:{category:"Time",value:"9AM"} },
+  { type:"NOT_EQUAL", left:{category:"Country",value:"Brazil"}, right:{category:"Time",value:"11AM"} },
+  { type:"NOT_EQUAL", left:{category:"Speaker",value:"Delta"}, right:{category:"Country",value:"USA"} },
+  { type:"NOT_EQUAL", left:{category:"Speaker",value:"Beta"}, right:{category:"Topic",value:"Security"} }
+]
+,
+
   solution: {
     House1: { Speaker: "Alpha", Topic: "AI", Country: "USA", Time: "9AM", Hall: "A" },
     House2: { Speaker: "Beta", Topic: "Climate", Country: "India", Time: "11AM", Hall: "B" },
@@ -374,5 +485,6 @@ clues: [
     House5: { Speaker: "Omega", Topic: "Security", Country: "Brazil", Time: "5PM", Hall: "E" }
   }
 }
+
 
 ];

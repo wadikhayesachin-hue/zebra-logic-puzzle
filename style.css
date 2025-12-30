@@ -3,6 +3,12 @@ body {
   background: #fafafa;
   padding: 30px;
 }
+.puzzle-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 30px;
+}
+
 
 h1, h2 {
   margin-bottom: 10px;
@@ -38,4 +44,22 @@ select {
   color: white;
   text-decoration: none;
   border-radius: 6px;
+}
+.completion-panel {
+  margin-top: 30px;
+  padding: 20px;
+  border-top: 2px solid #ddd;
+  background: #fafafa;
+}
+
+.completion-panel h3 {
+  margin-top: 0;
+}
+
+.completion-actions {
+  margin-top: 15px;
+}
+
+.completion-actions button {
+  margin-right: 10px;
 }
